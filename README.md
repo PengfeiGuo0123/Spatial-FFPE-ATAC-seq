@@ -62,11 +62,11 @@ See the files in Image_preprocess under Data_preprocessing folder.
 ### 3. Downstream analysis
 Downstream analyses were completed with R and Python. 
 The [SnapATAC2](https://github.com/kaizhang/SnapATAC2) was conducted for normalization and dimension reduction.
-The R package used extensively the functions in Seurat v.4.3.0.1, ArchR v1.0.2. 
+The R package used extensively the functions in [Seurat](https://github.com/satijalab/seurat) v.4.3.0.1, [ArchR](https://github.com/GreenleafLab/ArchR) v1.0.2. 
 
 **Brief descriptions of analysis scripts:**
-SnapATAC2: Analysis of ATAC data.
-ArchR: Analysis and visualization of ATAC data.
+[SnapATAC2](https://github.com/kaizhang/SnapATAC2): Analysis of ATAC data.
+[ArchR](https://github.com/GreenleafLab/ArchR): Analysis and visualization of ATAC data.
 
 
 **Functions:**
