@@ -294,3 +294,69 @@ plotPDF(plotList = p_track,
         name = paste0(sampleNames, "_Plot-Tracks-Marker-Genes-10kb.pdf"),
         ArchRProj = projCUTA,
         addDOC = FALSE, width = 5, height = 5)
+
+
+                               
+###########################snapatac.meta.data input
+meta.data_snapatac <- read.table('./snapatac/metadata_snapatac.csv', header = TRUE, row.names = 1, sep = ',')
+common_cells <- intersect(Cells(spatial.obj), row.names(meta.data_snapatac))
+meta.data_snapatac1 <- meta.data_snapatac[common_cells, ]
+spatial.obj$barcode <- rownames(spatial.obj@meta.data)
+spatial.obj <- subset(x = spatial.obj, barcode %in% common_cells )
+
+all(row.names(meta.data_snapatac1) == Cells(spatial.obj))
+
+spatial.obj$clusters_snapatac <- meta.data_snapatac1$leiden
+
+n_clusters <- length(unique(spatial.obj$clusters_snapatac ))
+cols <- ArchRPalettes$stallion[as.character(seq_len(n_clusters))]
+names(cols) <- seq_len(n_clusters)-1
+cols
+
+p1 <- SpatialPlot(spatial.obj, label = FALSE, label.size = 3, group.by = 'clusters_snapatac', 
+                  pt.size.factor = 4.5, image.alpha = 0, stroke = 0, cols = cols)
+p1$layers[[1]]$aes_params <- c(p1$layers[[1]]$aes_params, shape=22)
+p1
+
+# png(filename = paste0(sampleNames, '_clusters_spatial_snapatac.png'), width = 3600, height = 3000, res = 300)
+plotPDF(p1, name = paste0(sampleNames, '_clusters_spatial.pdf'), addDOC = FALSE, width = 5, height = 5)
+p1
+dev.off()
+
+pdf( paste0(sampleNames, '_clusters_spatial.pdf') , width = 5, height = 5)
+p1
+dev.off()
+
+############# umap
+library(ggplot2)
+
+# Load the UMAP projection
+umap_df <- read.csv('./snapatac/umap_projection.csv')
+umap_df$cluster <- meta.data_snapatac$leiden
+
+# Plot the UMAP projection
+ggplot(umap_df, aes(x = UMAP1, y = UMAP2)) +
+  geom_point(alpha = 0.5) +
+  labs(title = "UMAP Projection", x = "UMAP1", y = "UMAP2") +
+  theme_minimal()
+
+#save.image('snapatac_nbl_atac.RData')
+
+p2 <- ggplot(umap_df, aes(x = UMAP1, y = UMAP2, color = factor(cluster))) +
+  geom_point(size = 1.2) +
+  scale_color_manual(values = cols) +
+  labs(title = "UMAP Projection", x = "UMAP1", y = "UMAP2") +
+  theme_minimal(base_size = 15) + # Increase base size if needed
+  theme(
+    panel.grid = element_blank(),  # Remove grid lines
+    panel.background = element_rect(fill = "white", color = NA),  # Set background to white
+    plot.background = element_rect(fill = "white", color = NA)  # Ensure plot background is white
+  )
+
+p2
+
+
+pdf( paste0(sampleNames, '_clusters_dim.pdf') , width = 8, height = 6)
+p2
+dev.off()
+                               
