@@ -38,10 +38,6 @@ def main(fragment_file, bin_size_set, n_features_set, path_save):
     snap.pp.add_tile_matrix(data, bin_size = bin_size_set)
     snap.pp.select_features(data, n_features = n_features_set)
 
-    # doublet
-    snap.pp.scrublet(data)
-    snap.pp.filter_doublets(data)
-
     # dimention reduction
     snap.tl.spectral(data)
     snap.tl.umap(data, use_dims=list(range(1, 10)))
